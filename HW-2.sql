@@ -1,39 +1,48 @@
-create TABLE IF NOT exists album (
-	album_id SERIAL primary key,
-	name VARCHAR(100) unique not null,
-	date_create date not null
+CREATE TABLE IF NOT EXISTS album (
+	album_id SERIAL PRIMARY KEY,
+	name VARCHAR(60) UNIQUE NOT NULL,
+	date_create INTEGER,
+	CHECK (date_create >= '1970')
 );
-create TABLE IF NOT exists  collection (
-	collection_id SERIAL primary key,
-	name VARCHAR(100) unique not null,
-	date_create date not null
-); 
-create TABLE IF NOT exists  genre (
-	genre_id SERIAL primary key,
-	name VARCHAR(100) unique not null
-); 
-create TABLE IF NOT exists  list_artist (
-	artist_id SERIAL primary key,
-	pseudonym VARCHAR(100) unique not null
-); 
-create TABLE IF NOT exists  list_track (
-	track_id SERIAL primary key,
-	name VARCHAR(100) not null,
-	duration integer
+
+CREATE TABLE IF NOT EXISTS collection (
+	collection_id SERIAL PRIMARY KEY,
+	name VARCHAR(60) UNIQUE NOT NULL,
+	date_create DATE NOT NULL,
+	CHECK (date_create >= '1970')
 );
-create TABLE IF NOT exists Genre_Artist (
-  genre_id INT references genre (genre_id),
-  artist_id INT references list_artist (artist_id),
-  primary key (genre_id, artist_id)
+
+CREATE TABLE IF NOT EXISTS genre (
+	genre_id SERIAL PRIMARY KEY,
+	name VARCHAR(20) UNIQUE NOT NULL
 );
-create TABLE IF NOT exists Album_Artist (
-  artist_id INT references list_artist (artist_id),
-  album_id INT references album (album_id),
-  primary key (artist_id, album_id)
+
+CREATE TABLE IF NOT EXISTS list_artist (
+	artist_id SERIAL PRIMARY KEY,
+	pseudonym VARCHAR(40) UNIQUE NOT NULL
 );
-create TABLE IF NOT exists Track_Collection (
-  track_id INT references list_track (track_id),
-  collection_id INT references collection (collection_id),
-  primary key (track_id, collection_id)
+
+CREATE TABLE IF NOT EXISTS list_track (
+	track_id SERIAL PRIMARY KEY,
+	name VARCHAR(60) NOT NULL,
+	duration INTEGER CHECK (duration < 600),
+	album_id INT REFERENCES album (album_id)
 );
-	
+
+CREATE TABLE IF NOT EXISTS Genre_Artist (
+	genre_id INT REFERENCES genre (genre_id),
+	artist_id INT REFERENCES list_artist (artist_id),
+	PRIMARY KEY (genre_id, artist_id)
+);
+
+CREATE TABLE IF NOT EXISTS Album_Artist (
+	artist_id INT REFERENCES list_artist (artist_id),
+	album_id INT REFERENCES album (album_id),
+	PRIMARY KEY (artist_id, album_id)
+);
+
+CREATE TABLE IF NOT EXISTS Track_Collection (
+	track_id INT REFERENCES list_track (track_id),
+	collection_id INT REFERENCES collection (collection_id),
+	PRIMARY KEY (track_id, collection_id)
+);
